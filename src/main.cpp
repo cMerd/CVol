@@ -8,11 +8,11 @@ namespace raylib {
 #include <raylib.h>
 }
 
-void initProgram(int width, int height) {
+void initProgram(int width, int height, bool log_raylib) {
 
-#ifndef DEBUG
-  raylib::SetTraceLogLevel(raylib::LOG_NONE);
-#endif
+  if (!log_raylib) {
+    raylib::SetTraceLogLevel(raylib::LOG_NONE);
+  }
 
   raylib::SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT);
   raylib::SetConfigFlags(raylib::FLAG_WINDOW_RESIZABLE);
@@ -22,22 +22,33 @@ void initProgram(int width, int height) {
   raylib::InitWindow(width, height, "Hello World!");
 }
 
-int main(int argc, char *argv[]) {
-
+void parseArgs(int argc, char *argv[]) {
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
     if (arg == "-d" or arg == "--debug") {
       DEBUG_MODE = true;
     } else {
       errorForce(std::string("Unknown argument: " + arg));
+      exit(1);
     }
   }
+
+  logln("Parsed arguments.");
+}
+
+int main(int argc, char *argv[]) {
+
+  parseArgs(argc, argv);
 
   constexpr int SCREEN_WIDTH = 700, SCREEN_HEIGHT = 400;
 
   volumeController vc;
-  slider s(vc.getVolume(), [&vc](int val) { vc.setVolume(val); });
-  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT);
+  slider s(vc.getVolume(), [&vc](int val) {
+    vc.setVolume(val);
+    logln("Volume set to: " + std::to_string(val));
+  });
+  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+  logln("Window created.");
 
   const raylib::Font font = raylib::LoadFont(
       (std::string(raylib::GetApplicationDirectory()) +
@@ -59,8 +70,11 @@ int main(int argc, char *argv[]) {
 
     raylib::EndDrawing();
   }
+  logln("Exitting program...");
 
   raylib::UnloadFont(font);
   raylib::CloseWindow();
+  logln("Window closed.");
+
   return 0;
 }
