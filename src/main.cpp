@@ -1,5 +1,6 @@
-#include "./../inc/cvol.hpp"
-#include "./../inc/slider.hpp"
+#include "../inc/cvol.hpp"
+#include "../inc/log.hpp"
+#include "../inc/slider.hpp"
 
 #include <string>
 
@@ -7,11 +8,11 @@ namespace raylib {
 #include <raylib.h>
 }
 
-void initProgram(int width, int height, bool log) {
+void initProgram(int width, int height) {
 
-  if (!log) {
-    raylib::SetTraceLogLevel(raylib::LOG_NONE);
-  }
+#ifndef DEBUG
+  raylib::SetTraceLogLevel(raylib::LOG_NONE);
+#endif
 
   raylib::SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT);
   raylib::SetConfigFlags(raylib::FLAG_WINDOW_RESIZABLE);
@@ -21,12 +22,22 @@ void initProgram(int width, int height, bool log) {
   raylib::InitWindow(width, height, "Hello World!");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  for (int i = 1; i < argc; i++) {
+    std::string arg = argv[i];
+    if (arg == "-d" or arg == "--debug") {
+      DEBUG_MODE = true;
+    } else {
+      errorForce(std::string("Unknown argument: " + arg));
+    }
+  }
+
   constexpr int SCREEN_WIDTH = 700, SCREEN_HEIGHT = 400;
 
   volumeController vc;
   slider s(vc.getVolume(), [&vc](int val) { vc.setVolume(val); });
-  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT);
 
   const raylib::Font font = raylib::LoadFont(
       (std::string(raylib::GetApplicationDirectory()) +
