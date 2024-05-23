@@ -48,7 +48,8 @@ int main(int argc, char *argv[]) {
   try {
     arg = parseArgs(argc, argv);
   } catch (const std::exception &e) {
-    logln(e.what());
+    errorForce(e.what());
+    return 1;
   }
 
   if (arg.help) {
