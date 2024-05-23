@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 extern bool DEBUG_MODE;
