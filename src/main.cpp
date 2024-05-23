@@ -1,3 +1,4 @@
+#include "../inc/args.hpp"
 #include "../inc/cvol.hpp"
 #include "../inc/log.hpp"
 #include "../inc/slider.hpp"
@@ -22,23 +23,44 @@ void initProgram(int width, int height, bool log_raylib) {
   raylib::InitWindow(width, height, "Hello World!");
 }
 
-void parseArgs(int argc, char *argv[]) {
+args parseArgs(int argc, char *argv[]) {
+  args val;
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
     if (arg == "-d" or arg == "--debug") {
-      DEBUG_MODE = true;
+      val.debug = true;
+    } else if (arg == "-r" or arg == "--raylib_logs") {
+      val.raylib_logs = true;
+    } else if (arg == "-h" or arg == "--help") {
+      val.help = true;
     } else {
-      errorForce(std::string("Unknown argument: " + arg));
-      exit(1);
+      throw std::invalid_argument("Invalid arg: " + arg);
     }
   }
 
   logln("Parsed arguments.");
+  return val;
 }
 
 int main(int argc, char *argv[]) {
 
-  parseArgs(argc, argv);
+  args arg;
+  try {
+    arg = parseArgs(argc, argv);
+  } catch (const std::exception &e) {
+    logln(e.what());
+  }
+
+  if (arg.help) {
+    std::cout << "cvol: a simple GUI audio controller\n";
+    std::cout << "Argument: \n";
+    std::cout << "\t-d, --debug: Enable debug logs\n";
+    std::cout << "\t-r, --raylig_logs: Enable raylib logs\n";
+    std::cout << "\t-h, --help: Display this help page\n";
+    return 0;
+  }
+
+  DEBUG_MODE = arg.debug;
 
   constexpr int SCREEN_WIDTH = 700, SCREEN_HEIGHT = 400;
 
@@ -47,7 +69,7 @@ int main(int argc, char *argv[]) {
     vc.setVolume(val);
     logln("Volume set to: " + std::to_string(val));
   });
-  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT, arg.raylib_logs);
   logln("Window created.");
 
   const raylib::Font font = raylib::LoadFont(
