@@ -25,60 +25,6 @@ void slider::render(const raylib::Rectangle &bar, float radius,
   this->updateValue(bar);
 }
 
-/*
-void slider::draw(const raylib::Rectangle &bar, float radius,
-                  const raylib::Color &color, const raylib::Color &button_color,
-                  const raylib::Color &button_line_color,
-                  const raylib::Color &unused_color,
-                  const raylib::Color &clicked_button_color,
-                  const raylib::Color &hovered_button_color) const {
-  raylib::Rectangle cursor;
-  cursor.width = bar.width / 10.0f;
-  cursor.height = bar.height + 5.0f;
-  cursor.x = (bar.x + (bar.width * var / 100.0f)) - cursor.width / 2.0f;
-  cursor.y = bar.y - 2.0f;
-
-  // animation to play on hover
-  // TODO: Make it smoother
-  auto animation_scale = [](float val, raylib::Rectangle &cursor) {
-    float deltaWidth = cursor.width * val;
-    float deltaHeight = cursor.height * val;
-    cursor.width *= 1.0 + val;
-    cursor.height *= 1.0 + val;
-    cursor.x -= deltaWidth / 2;
-    cursor.y -= deltaHeight / 2;
-  };
-
-  // unused (background) bar
-  raylib::DrawRectangleRounded(bar, radius, 1, unused_color);
-
-  // used area
-  raylib::DrawRectangleRounded(
-      {bar.x, bar.y, cursor.x - bar.x + cursor.width, bar.height}, radius, 1,
-      color);
-
-  // cursor
-  raylib::Color cursor_color;
-  if (this->isClicked(cursor)) {
-    cursor_color = clicked_button_color;
-    animation_scale(0.1, cursor);
-  } else if (this->isHovered(cursor)) {
-    cursor_color = hovered_button_color;
-    animation_scale(0.1, cursor);
-  } else {
-    cursor_color = button_color;
-  }
-
-  raylib::DrawRectangleRounded(cursor, radius, 1, cursor_color);
-
-  for (float i = cursor.y + 20.0f; i <= cursor.y + cursor.height - 10.0f;
-       i += 10.0f) {
-    raylib::DrawLine(cursor.x + 5.0f, i, cursor.x + cursor.width - 5.0f, i,
-                     button_line_color);
-  }
-}
-*/
-
 void slider::draw(const raylib::Rectangle &bar, float radius,
                   const raylib::Color &color, const raylib::Color &button_color,
                   const raylib::Color &button_line_color,
