@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
 
   const raylib::Font font = raylib::LoadFontEx(
       (std::string(raylib::GetApplicationDirectory()) +
-       std::string("../assets/BitstromWeraNerdFont-Regular.ttf"))
+       std::string("../assets/font.ttf"))
           .c_str(),
       config.volume_text.fontSize, NULL, 0);
 
