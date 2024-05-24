@@ -1,5 +1,4 @@
-#include "./../inc/slider.hpp"
-
+#include "../inc/slider.hpp"
 namespace raylib {
 #include <raylib.h>
 }
@@ -78,6 +77,7 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   static float animation_value = 0.0f; // this doesn't get out of scope, so it
                                        // gets larger every animation frame
   animation_value += (animation_target - animation_value) * animation_speed;
+
   this->cursor_anim(cursor, animation_value);
 
   raylib::DrawRectangleRounded(cursor, radius, 1, cursor_color);

@@ -6,12 +6,8 @@
 #include "../inc/log.hpp"
 #include "../inc/slider.hpp"
 
-#include <string>
 #include <iostream>
-
-#include <pwd.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <string>
 
 namespace raylib {
 #include <raylib.h>
@@ -31,22 +27,13 @@ void initProgram(int width, int height, bool log_raylib) {
   raylib::InitWindow(width, height, "Hello World!");
 }
 
-std::string getConfigPath() {
-  passwd *pw = getpwuid(getuid());
-  std::string home_dir = pw->pw_dir;
-  std::string config_path = home_dir + "/.config/cvol/config.json";
-  logln("Home directory: " + home_dir);
-  logln("Config path: " + config_path);
-  return config_path;
-}
-
 args parseArgs(int argc, char *argv[]) {
 
   args val = {.debug = false,
               .raylib_logs = false,
               .help = false,
               .version = false,
-              .config = getConfigPath()};
+              .config = config_cvol::getConfigPath()};
 
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
@@ -99,6 +86,8 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  DEBUG_MODE = arg.debug;
+
   config_cvol config;
   try {
     config.parse(arg.config);
@@ -107,8 +96,6 @@ int main(int argc, char *argv[]) {
     errorForce(e.what());
     return 2;
   }
-
-  DEBUG_MODE = arg.debug;
 
   volumeController vc;
   slider s(vc.getVolume(), [&vc](int val) {
@@ -143,8 +130,6 @@ int main(int argc, char *argv[]) {
              config.slider.button.hover_bg, config.slider.button.anim.speed,
              config.slider.button.anim.scale,
              config.slider.button.seperator_width);
-
-    logln(config.slider.button.seperator_width);
 
     raylib::EndDrawing();
   }

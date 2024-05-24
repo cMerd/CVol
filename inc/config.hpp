@@ -50,6 +50,7 @@ public:
   uint32_t height;
 
   void parse(const std::string &config_path);
+  static std::string getConfigPath();
 
 private:
   static raylib::Color hexToColor(const std::string &hex);

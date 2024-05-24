@@ -1,6 +1,12 @@
 #include "../inc/config.hpp"
+#include "../inc/log.hpp"
 #include <fstream>
+
 #include <json/json.h>
+
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 void config_cvol::parse(const std::string &config_path) {
   std::ifstream file_input(config_path);
@@ -18,10 +24,13 @@ void config_cvol::parse(const std::string &config_path) {
     throw std::runtime_error(errs);
   }
 
+  logln("Loaded config file: " + config_path);
+
   this->width = config["window"]["width"].asUInt();
   this->height = config["window"]["height"].asUInt();
   this->bg = hexToColor(config["window"]["bg"].asString());
   this->fg = hexToColor(config["window"]["fg"].asString());
+  logln("Loaded window config.");
 
   this->slider.x = config["slider"]["xPos"].asFloat();
   this->slider.y = config["slider"]["yPos"].asFloat();
@@ -32,6 +41,7 @@ void config_cvol::parse(const std::string &config_path) {
       hexToColor(config["slider"]["disabled_bg"].asString());
   this->slider.enabled_bg =
       hexToColor(config["slider"]["enabled_bg"].asString());
+  logln("Loaded slider config");
 
   this->slider.button.seperator_width =
       config["slider"]["button"]["seperator_width"].asFloat();
@@ -43,6 +53,7 @@ void config_cvol::parse(const std::string &config_path) {
       hexToColor(config["slider"]["button"]["click_bg"].asString());
   this->slider.button.seperator_color =
       hexToColor(config["slider"]["button"]["seperator_color"].asString());
+  logln("Loaded button config");
 
   this->slider.button.anim.enabled =
       config["slider"]["button"]["animation"]["enabled"].asBool();
@@ -50,12 +61,14 @@ void config_cvol::parse(const std::string &config_path) {
       config["slider"]["button"]["animation"]["scale"].asFloat();
   this->slider.button.anim.speed =
       config["slider"]["button"]["animation"]["speed"].asFloat();
+  logln("Loaded animation config");
 
   this->volume_text.volume_label =
       config["volume_text"]["volume_label"].asString();
   this->volume_text.xPos = config["volume_text"]["xPos"].asFloat();
   this->volume_text.yPos = config["volume_text"]["yPos"].asFloat();
   this->volume_text.fontSize = config["volume_text"]["font_size"].asUInt();
+  logln("Loaded volume text config.");
 }
 
 raylib::Color config_cvol::hexToColor(const std::string &hex) {
@@ -105,4 +118,13 @@ bool config_cvol::isValidHexColor(const std::string &hex) {
   }
 
   return true;
+}
+
+std::string config_cvol::getConfigPath() {
+  passwd *pw = getpwuid(getuid());
+  std::string home_dir = pw->pw_dir;
+  std::string config_path = home_dir + "/.config/cvol/config.json";
+  logln("Home directory: " + home_dir);
+  logln("Config path: " + config_path);
+  return config_path;
 }
