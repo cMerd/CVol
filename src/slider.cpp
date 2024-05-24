@@ -19,9 +19,11 @@ void slider::render(const raylib::Rectangle &bar, float radius,
                     const raylib::Color &button_line_color,
                     const raylib::Color &unused_color,
                     const raylib::Color &clicked_button_color,
-                    const raylib::Color &hovered_button_color) {
+                    const raylib::Color &hovered_button_color, float anim_speed,
+                    float anim_scale, float seperator_width) {
   this->draw(bar, radius, color, button_color, button_line_color, unused_color,
-             clicked_button_color, hovered_button_color);
+             clicked_button_color, hovered_button_color, anim_speed, anim_scale,
+             seperator_width);
   this->updateValue(bar);
 }
 
@@ -39,7 +41,9 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
                   const raylib::Color &button_line_color,
                   const raylib::Color &unused_color,
                   const raylib::Color &clicked_button_color,
-                  const raylib::Color &hovered_button_color) const {
+                  const raylib::Color &hovered_button_color,
+                  float animation_speed, float anim_scale,
+                  float seperator_width) const {
   raylib::Rectangle cursor;
   cursor.width = bar.width / 10.0f;
   cursor.height = bar.height + 5.0f;
@@ -60,10 +64,10 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   raylib::Color cursor_color;
   if (this->isClicked(cursor)) {
     cursor_color = clicked_button_color;
-    animation_target = 0.1f;
+    animation_target = anim_scale;
   } else if (this->isHovered(cursor)) {
     cursor_color = hovered_button_color;
-    animation_target = 0.1f;
+    animation_target = anim_scale;
   } else {
     cursor_color = button_color;
     animation_target = 0.0f;
@@ -73,7 +77,6 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   // Smoothing hover animation
   static float animation_value = 0.0f; // this doesn't get out of scope, so it
                                        // gets larger every animation frame
-  float animation_speed = 0.1f;
   animation_value += (animation_target - animation_value) * animation_speed;
   this->cursor_anim(cursor, animation_value);
 
@@ -84,8 +87,10 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   float separator_end = cursor.y + original_height - 10.0f;
 
   for (float i = separator_start; i <= separator_end; i += 10.0f) {
-    raylib::DrawLine(cursor.x + 5.0f, i, cursor.x + cursor.width - 5.0f, i,
-                     button_line_color);
+    raylib::DrawLine(cursor.x + ((cursor.width - seperator_width) / 2), i,
+                     cursor.x + cursor.width -
+                         ((cursor.width - seperator_width) / 2),
+                     i, button_line_color);
   }
 }
 

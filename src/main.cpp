@@ -1,9 +1,14 @@
 #include "../inc/args.hpp"
+#include "../inc/config.hpp"
 #include "../inc/cvol.hpp"
 #include "../inc/log.hpp"
 #include "../inc/slider.hpp"
 
 #include <string>
+
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace raylib {
 #include <raylib.h>
@@ -24,7 +29,13 @@ void initProgram(int width, int height, bool log_raylib) {
 }
 
 args parseArgs(int argc, char *argv[]) {
-  args val;
+
+  args val = {
+      .debug = false,
+      .raylib_logs = false,
+      .help = false,
+  };
+
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
     if (arg == "-d" or arg == "--debug") {
@@ -38,15 +49,25 @@ args parseArgs(int argc, char *argv[]) {
     }
   }
 
-  logln("Parsed arguments.");
   return val;
+}
+
+std::string getConfigPath() {
+  passwd *pw = getpwuid(getuid());
+  std::string home_dir = pw->pw_dir;
+  std::string config_path = home_dir + "/.config/cvol/config.json";
+  logln("Home directory: " + home_dir);
+  logln("Config path: " + config_path);
+  return config_path;
 }
 
 int main(int argc, char *argv[]) {
 
   args arg;
+
   try {
     arg = parseArgs(argc, argv);
+    logln("Parsed arguments.");
   } catch (const std::exception &e) {
     errorForce(e.what());
     return 1;
@@ -61,35 +82,52 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  DEBUG_MODE = arg.debug;
+  config_cvol config;
+  try {
+    config.parse(getConfigPath());
+    logln("Parsed config file");
+  } catch (const std::exception &e) {
+    errorForce(e.what());
+    return 2;
+  }
 
-  constexpr int SCREEN_WIDTH = 700, SCREEN_HEIGHT = 400;
+  DEBUG_MODE = arg.debug;
 
   volumeController vc;
   slider s(vc.getVolume(), [&vc](int val) {
     vc.setVolume(val);
     logln("Volume set to: " + std::to_string(val));
   });
-  initProgram(SCREEN_WIDTH, SCREEN_HEIGHT, arg.raylib_logs);
+  initProgram(config.width, config.height, arg.raylib_logs);
   logln("Window created.");
 
-  const raylib::Font font = raylib::LoadFont(
+  const raylib::Font font = raylib::LoadFontEx(
       (std::string(raylib::GetApplicationDirectory()) +
        std::string("../assets/BitstromWeraNerdFont-Regular.ttf"))
-          .c_str());
+          .c_str(),
+      config.volume_text.fontSize, NULL, 0);
 
   while (!raylib::WindowShouldClose()) {
     raylib::BeginDrawing();
-    raylib::ClearBackground(raylib::WHITE);
+    raylib::ClearBackground(config.bg);
 
-    DrawTextEx(font,
-               ("Volume: " + std::to_string(vc.getVolume()) + "%").c_str(),
-               (raylib::Vector2){20.0f, 350.0f}, (float)font.baseSize, 2,
-               raylib::BLACK);
+    DrawTextEx(
+        font,
+        (config.volume_text.volume_label + std::to_string(vc.getVolume()) + "%")
+            .c_str(),
+        (raylib::Vector2){config.volume_text.xPos, config.volume_text.yPos},
+        config.volume_text.fontSize, 2, config.fg);
 
-    s.render({100.0f, 100.0f, 500.0f, 80.0f}, 0.2f, raylib::DARKBLUE,
-             raylib::GRAY, raylib::BLACK, raylib::BLACK, raylib::DARKGRAY,
-             raylib::LIGHTGRAY);
+    s.render({config.slider.x, config.slider.y, config.slider.width,
+              config.slider.height},
+             config.slider.radius, config.slider.enabled_bg,
+             config.slider.button.bg, config.slider.button.seperator_color,
+             config.slider.disabled_bg, config.slider.button.click_bg,
+             config.slider.button.hover_bg, config.slider.button.anim.speed,
+             config.slider.button.anim.scale,
+             config.slider.button.seperator_width);
+
+    logln(config.slider.button.seperator_width);
 
     raylib::EndDrawing();
   }

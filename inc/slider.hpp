@@ -18,7 +18,8 @@ public:
               const raylib::Color &button_line_color,
               const raylib::Color &unused_color,
               const raylib::Color &clicked_button_color,
-              const raylib::Color &hovered_button_color);
+              const raylib::Color &hovered_button_color, float anim_speed,
+              float anim_scale, float seperator_width);
 
   int getValue() const;
 
@@ -29,7 +30,8 @@ private:
             const raylib::Color &button_line_color,
             const raylib::Color &unused_color,
             const raylib::Color &clicked_button_color,
-            const raylib::Color &hovered_button_color) const;
+            const raylib::Color &hovered_button_color, float anim_speed,
+            float anim_scale, float seperator_width) const;
 
   void cursor_anim(raylib::Rectangle &cursor, float val) const;
 

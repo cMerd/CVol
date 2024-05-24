@@ -1,0 +1,36 @@
+{
+  "window": {
+    "bg": "#FFFFFF",
+    "fg": "#000000",
+    "width": 700,
+    "height": 400,
+  },
+  "slider": {
+    "xPos": 100,
+    "yPos": 100,
+    "width": 500,
+    "height": 80,
+    "radius": 0.2,
+    "disabled_bg": "#000000",
+    "enabled_bg": "#0000FF",
+    "button": {
+      "seperator_width": 15,
+      "seperator_margin": 15,
+      "bg": "#999999",
+      "hover_bg": "#BBBBBB",
+      "click_bg": "#777777",
+      "seperator_color": "#111111",
+      "animation": {
+        "enabled": true,
+        "scale": 0.1,
+        "speed": 0.1
+      }
+    }
+  },
+  "volume_text": {
+    "volume_label": "Volume: ",
+    "xPos": 20,
+    "yPos": 350,
+    "font_size": 35
+  }
+}
