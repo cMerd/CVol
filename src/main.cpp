@@ -1,3 +1,5 @@
+#define CVOL_VERSION "v0.1.0"
+
 #include "../inc/args.hpp"
 #include "../inc/config.hpp"
 #include "../inc/cvol.hpp"
@@ -5,6 +7,7 @@
 #include "../inc/slider.hpp"
 
 #include <string>
+#include <iostream>
 
 #include <pwd.h>
 #include <sys/types.h>
@@ -28,13 +31,22 @@ void initProgram(int width, int height, bool log_raylib) {
   raylib::InitWindow(width, height, "Hello World!");
 }
 
+std::string getConfigPath() {
+  passwd *pw = getpwuid(getuid());
+  std::string home_dir = pw->pw_dir;
+  std::string config_path = home_dir + "/.config/cvol/config.json";
+  logln("Home directory: " + home_dir);
+  logln("Config path: " + config_path);
+  return config_path;
+}
+
 args parseArgs(int argc, char *argv[]) {
 
-  args val = {
-      .debug = false,
-      .raylib_logs = false,
-      .help = false,
-  };
+  args val = {.debug = false,
+              .raylib_logs = false,
+              .help = false,
+              .version = false,
+              .config = getConfigPath()};
 
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
@@ -44,21 +56,19 @@ args parseArgs(int argc, char *argv[]) {
       val.raylib_logs = true;
     } else if (arg == "-h" or arg == "--help") {
       val.help = true;
+    } else if (arg == "-v" or arg == "--version") {
+      val.version = true;
+    } else if (arg == "-c" or arg == "--config") {
+      if (i == argc - 1) {
+        throw std::logic_error("-c/--config requires config file path.");
+      }
+      val.config = argv[++i];
     } else {
       throw std::invalid_argument("Invalid arg: " + arg);
     }
   }
 
   return val;
-}
-
-std::string getConfigPath() {
-  passwd *pw = getpwuid(getuid());
-  std::string home_dir = pw->pw_dir;
-  std::string config_path = home_dir + "/.config/cvol/config.json";
-  logln("Home directory: " + home_dir);
-  logln("Config path: " + config_path);
-  return config_path;
 }
 
 int main(int argc, char *argv[]) {
@@ -73,8 +83,15 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  if (arg.version) {
+    std::cout << "cvol: a simple GUI audio controller\n";
+    std::cout << "version: " << CVOL_VERSION << '\n';
+    std::cout << "\'cvol --help\' for more.\n";
+  }
+
   if (arg.help) {
     std::cout << "cvol: a simple GUI audio controller\n";
+    std::cout << "version: " << CVOL_VERSION << '\n';
     std::cout << "Argument: \n";
     std::cout << "\t-d, --debug: Enable debug logs\n";
     std::cout << "\t-r, --raylig_logs: Enable raylib logs\n";
@@ -84,7 +101,7 @@ int main(int argc, char *argv[]) {
 
   config_cvol config;
   try {
-    config.parse(getConfigPath());
+    config.parse(arg.config);
     logln("Parsed config file");
   } catch (const std::exception &e) {
     errorForce(e.what());
@@ -101,11 +118,11 @@ int main(int argc, char *argv[]) {
   initProgram(config.width, config.height, arg.raylib_logs);
   logln("Window created.");
 
-  const raylib::Font font = raylib::LoadFontEx(
-      (std::string(raylib::GetApplicationDirectory()) +
-       std::string("../assets/font.ttf"))
-          .c_str(),
-      config.volume_text.fontSize, NULL, 0);
+  const raylib::Font font =
+      raylib::LoadFontEx((std::string(raylib::GetApplicationDirectory()) +
+                          std::string("../assets/font.ttf"))
+                             .c_str(),
+                         config.volume_text.fontSize, NULL, 0);
 
   while (!raylib::WindowShouldClose()) {
     raylib::BeginDrawing();
