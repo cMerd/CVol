@@ -25,6 +25,15 @@ void slider::render(const raylib::Rectangle &bar, float radius,
   this->updateValue(bar);
 }
 
+void slider::cursor_anim(raylib::Rectangle &cursor, float val) const {
+  float deltaWidth = cursor.width * val;
+  float deltaHeight = cursor.height * val;
+  cursor.width *= 1.0f + val;
+  cursor.height *= 1.0f + val;
+  cursor.x -= deltaWidth / 2.0f;
+  cursor.y -= deltaHeight / 2.0f;
+}
+
 void slider::draw(const raylib::Rectangle &bar, float radius,
                   const raylib::Color &color, const raylib::Color &button_color,
                   const raylib::Color &button_line_color,
@@ -36,19 +45,9 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   cursor.height = bar.height + 5.0f;
   cursor.x = (bar.x + (bar.width * var / 100.0f)) - cursor.width / 2.0f;
   cursor.y = bar.y - 2.0f;
-  float original_height = cursor.height; // for seperators to find the correct
-                                         // height even if animation plays
 
+  float original_height = cursor.height;
   float animation_target = 0.0f;
-
-  auto animation_scale = [](float val, raylib::Rectangle &cursor) {
-    float deltaWidth = cursor.width * val;
-    float deltaHeight = cursor.height * val;
-    cursor.width *= 1.0f + val;
-    cursor.height *= 1.0f + val;
-    cursor.x -= deltaWidth / 2.0f;
-    cursor.y -= deltaHeight / 2.0f;
-  };
 
   // unused (background) bar
   raylib::DrawRectangleRounded(bar, radius, 1, unused_color);
@@ -76,14 +75,12 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
                                        // gets larger every animation frame
   float animation_speed = 0.1f;
   animation_value += (animation_target - animation_value) * animation_speed;
-  float anim_val = animation_value;
-  animation_scale(animation_value, cursor);
+  this->cursor_anim(cursor, animation_value);
 
   raylib::DrawRectangleRounded(cursor, radius, 1, cursor_color);
 
   // Calculate the number of separators based on the original cursor height
-  float separator_start =
-      cursor.y + (20.0f) * (anim_val != 0.0f ? 1.0f + anim_val : 1);
+  float separator_start = cursor.y + (20.0f);
   float separator_end = cursor.y + original_height - 10.0f;
 
   for (float i = separator_start; i <= separator_end; i += 10.0f) {
