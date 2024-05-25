@@ -24,47 +24,21 @@ void initProgram(int width, int height, bool log_raylib) {
   raylib::SetWindowState(raylib::FLAG_WINDOW_UNDECORATED);
   raylib::SetTargetFPS(60);
 
-  raylib::InitWindow(width, height, "Hello World!");
-}
-
-args parseArgs(int argc, char *argv[]) {
-
-  args val = {.debug = false,
-              .raylib_logs = false,
-              .help = false,
-              .version = false,
-              .config = config_cvol::getConfigPath()};
-
-  for (int i = 1; i < argc; i++) {
-    std::string arg = argv[i];
-    if (arg == "-d" or arg == "--debug") {
-      val.debug = true;
-    } else if (arg == "-r" or arg == "--raylib_logs") {
-      val.raylib_logs = true;
-    } else if (arg == "-h" or arg == "--help") {
-      val.help = true;
-    } else if (arg == "-v" or arg == "--version") {
-      val.version = true;
-    } else if (arg == "-c" or arg == "--config") {
-      if (i == argc - 1) {
-        throw std::logic_error("-c/--config requires config file path.");
-      }
-      val.config = argv[++i];
-    } else {
-      throw std::invalid_argument("Invalid arg: " + arg);
-    }
-  }
-
-  return val;
+  raylib::InitWindow(width, height, "CVol");
 }
 
 int main(int argc, char *argv[]) {
 
   args arg;
+  config_cvol config;
+  volumeController vc;
+  slider slider_widget(vc.getVolume(), [&vc](int val) {
+    vc.setVolume(val);
+    logln("Volume set to: " + std::to_string(val));
+  });
 
   try {
-    arg = parseArgs(argc, argv);
-    logln("Parsed arguments.");
+    arg.parseArgs(argc, argv);
   } catch (const std::exception &e) {
     errorForce(e.what());
     return 1;
@@ -86,9 +60,6 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  DEBUG_MODE = arg.debug;
-
-  config_cvol config;
   try {
     config.parse(arg.config);
     logln("Parsed config file");
@@ -97,37 +68,33 @@ int main(int argc, char *argv[]) {
     return 2;
   }
 
-  volumeController vc;
-  slider s(vc.getVolume(), [&vc](int val) {
-    vc.setVolume(val);
-    logln("Volume set to: " + std::to_string(val));
-  });
   initProgram(config.width, config.height, arg.raylib_logs);
   logln("Window created.");
 
-  const raylib::Font font =
-      raylib::LoadFontEx((config.volume_text.font_path).c_str(),
-                         config.volume_text.fontSize, NULL, 0);
+  raylib::Font font = raylib::LoadFontEx((config.volume_text.font_path).c_str(),
+                                         config.volume_text.font_size, NULL, 0);
 
   while (!raylib::WindowShouldClose()) {
     raylib::BeginDrawing();
     raylib::ClearBackground(config.bg);
 
+    // volume text
     DrawTextEx(
         font,
         (config.volume_text.volume_label + std::to_string(vc.getVolume()) + "%")
             .c_str(),
-        (raylib::Vector2){config.volume_text.xPos, config.volume_text.yPos},
-        config.volume_text.fontSize, 2, config.fg);
+        (raylib::Vector2){config.volume_text.x_pos, config.volume_text.y_pos},
+        config.volume_text.font_size, 2, config.fg);
 
-    s.render({config.slider.x, config.slider.y, config.slider.width,
-              config.slider.height},
-             config.slider.radius, config.slider.enabled_bg,
-             config.slider.button.bg, config.slider.button.seperator_color,
-             config.slider.disabled_bg, config.slider.button.click_bg,
-             config.slider.button.hover_bg, config.slider.button.anim.speed,
-             config.slider.button.anim.scale,
-             config.slider.button.seperator_width);
+    // slider
+    slider_widget.render(
+        {config.slider.x, config.slider.y, config.slider.width,
+         config.slider.height},
+        config.slider.radius, config.slider.enabled_bg, config.slider.button.bg,
+        config.slider.button.seperator_color, config.slider.disabled_bg,
+        config.slider.button.click_bg, config.slider.button.hover_bg,
+        config.slider.button.anim.speed, config.slider.button.anim.scale,
+        config.slider.button.seperator_width);
 
     raylib::EndDrawing();
   }

@@ -26,7 +26,7 @@ void slider::render(const raylib::Rectangle &bar, float radius,
   this->updateValue(bar);
 }
 
-void slider::cursor_anim(raylib::Rectangle &cursor, float val) const {
+void slider::playCursorAnimation(raylib::Rectangle &cursor, float val) const {
   float deltaWidth = cursor.width * val;
   float deltaHeight = cursor.height * val;
   cursor.width *= 1.0f + val;
@@ -78,7 +78,7 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
                                        // gets larger every animation frame
   animation_value += (animation_target - animation_value) * animation_speed;
 
-  this->cursor_anim(cursor, animation_value);
+  this->playCursorAnimation(cursor, animation_value);
 
   raylib::DrawRectangleRounded(cursor, radius, 1, cursor_color);
 

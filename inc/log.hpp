@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+// forced functions won't check if debug mode is on
 extern bool DEBUG_MODE;
 
 template <typename T> void logln(const T &el) {

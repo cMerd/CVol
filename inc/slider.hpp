@@ -33,7 +33,7 @@ private:
             const raylib::Color &hovered_button_color, float anim_speed,
             float anim_scale, float seperator_width) const;
 
-  void cursor_anim(raylib::Rectangle &cursor, float val) const;
+  void playCursorAnimation(raylib::Rectangle &cursor, float val) const;
 
   static bool isHovered(const raylib::Rectangle &cursor);
   static bool isClicked(const raylib::Rectangle &cursor);

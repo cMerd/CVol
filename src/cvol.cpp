@@ -1,4 +1,5 @@
 #include "../inc/cvol.hpp"
+#include "../inc/log.hpp"
 #include <alsa/asoundlib.h>
 #include <cmath>
 #include <string>
@@ -16,12 +17,17 @@ volumeController::volumeController() {
   elem = snd_mixer_find_selem(h_mixer, sid);
 
   snd_mixer_selem_get_playback_volume_range(elem, &min_vol, &max_vol);
+  logln("Initialized volume controller.");
 }
 
 volumeController::~volumeController() { snd_mixer_close(h_mixer); }
 
 void volumeController::setVolume(long volume) {
+  if (volume < 0 or volume > 100) {
+    errorForce("Dangerous volume value was given: " + std::to_string(volume));
+  }
   snd_mixer_selem_set_playback_volume_all(elem, volume * max_vol / 100);
+  logln("Volume set to: " + std::to_string(volume));
 }
 
 long volumeController::getVolume() {
