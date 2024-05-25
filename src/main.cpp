@@ -1,4 +1,4 @@
-#define CVOL_VERSION "v0.1.0"
+#define CVOL_VERSION "v0.2.0"
 
 #include "../inc/args.hpp"
 #include "../inc/config.hpp"
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
         config.slider.button.seperator_color, config.slider.disabled_bg,
         config.slider.button.click_bg, config.slider.button.hover_bg,
         config.slider.button.anim.speed, config.slider.button.anim.scale,
-        config.slider.button.seperator_width);
+        config.slider.button.seperator_width, config.slider.direction);
 
     raylib::EndDrawing();
   }

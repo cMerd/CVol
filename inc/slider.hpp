@@ -2,6 +2,9 @@
 
 #include <functional>
 
+// For DIRECTION
+#include "../inc/config.hpp"
+
 namespace raylib {
 #include <raylib.h>
 }
@@ -19,19 +22,21 @@ public:
               const raylib::Color &unused_color,
               const raylib::Color &clicked_button_color,
               const raylib::Color &hovered_button_color, float anim_speed,
-              float anim_scale, float seperator_width);
+              float anim_scale, float seperator_width,
+              DIRECTION slider_direction);
 
   int getValue() const;
 
 private:
-  void updateValue(const raylib::Rectangle &bar);
+  void updateValue(const raylib::Rectangle &bar, DIRECTION slider_direction);
   void draw(const raylib::Rectangle &bar, float radius,
             const raylib::Color &color, const raylib::Color &button_color,
             const raylib::Color &button_line_color,
             const raylib::Color &unused_color,
             const raylib::Color &clicked_button_color,
             const raylib::Color &hovered_button_color, float anim_speed,
-            float anim_scale, float seperator_width) const;
+            float anim_scale, float seperator_width,
+            DIRECTION slider_direction) const;
 
   void playCursorAnimation(raylib::Rectangle &cursor, float val) const;
 

@@ -1,7 +1,13 @@
 #include "../inc/slider.hpp"
+
+// For DIRECTION
+#include "../inc/config.hpp"
+
 namespace raylib {
 #include <raylib.h>
 }
+
+#include <stdexcept>
 
 slider::slider() {}
 
@@ -19,12 +25,13 @@ void slider::render(int val, const raylib::Rectangle &bar, float radius,
                     const raylib::Color &unused_color,
                     const raylib::Color &clicked_button_color,
                     const raylib::Color &hovered_button_color, float anim_speed,
-                    float anim_scale, float seperator_width) {
+                    float anim_scale, float seperator_width,
+                    DIRECTION slider_direction) {
   this->var = val;
   this->draw(bar, radius, color, button_color, button_line_color, unused_color,
              clicked_button_color, hovered_button_color, anim_speed, anim_scale,
-             seperator_width);
-  this->updateValue(bar);
+             seperator_width, slider_direction);
+  this->updateValue(bar, slider_direction);
 }
 
 void slider::playCursorAnimation(raylib::Rectangle &cursor, float val) const {
@@ -43,12 +50,25 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
                   const raylib::Color &clicked_button_color,
                   const raylib::Color &hovered_button_color,
                   float animation_speed, float anim_scale,
-                  float seperator_width) const {
+                  float seperator_width, DIRECTION slider_direction) const {
   raylib::Rectangle cursor;
-  cursor.width = bar.width / 10.0f;
-  cursor.height = bar.height + 5.0f;
-  cursor.x = (bar.x + (bar.width * var / 100.0f)) - cursor.width / 2.0f;
-  cursor.y = bar.y - 2.0f;
+  switch (slider_direction) {
+  case VERTICAL:
+    cursor.width = bar.width / 10.0f;
+    cursor.height = bar.height + 5.0f;
+    cursor.x = (bar.x + (bar.width * var / 100.0f)) - cursor.width / 2.0f;
+    cursor.y = bar.y - 2.0f;
+    break;
+  case HORIZONTAL:
+    cursor.width = bar.width + 5.0f;
+    cursor.height = bar.height / 10.0f;
+    cursor.x = bar.x - 2.0f;
+    cursor.y = (bar.y + (bar.height * var / 100.0f) - cursor.height / 2.0f);
+    break;
+  default:
+    throw std::logic_error("Invalid direction.");
+    break;
+  }
 
   float original_height = cursor.height;
   float animation_target = 0.0f;
@@ -95,7 +115,8 @@ void slider::draw(const raylib::Rectangle &bar, float radius,
   }
 }
 
-void slider::updateValue(const raylib::Rectangle &bar) {
+void slider::updateValue(const raylib::Rectangle &bar,
+                         DIRECTION slider_direction) {
 
   if (!this->isClicked(bar)) {
     return;
@@ -105,9 +126,21 @@ void slider::updateValue(const raylib::Rectangle &bar) {
   // bar.width * var / 100 = raylib::GetMouseX() - bar.x;
   // bar.width * var = (raylib::GetMouseX() - bar.x) * 100;
   // var = (raylib::GetMouseX() - bar.x) * 100 / bar.width;
-
-  int mouseX = raylib::GetMouseX();
-  var = (mouseX - bar.x) * 100 / bar.width;
+  switch (slider_direction) {
+  case VERTICAL: {
+    int mouseX = raylib::GetMouseX();
+    var = (mouseX - bar.x) * 100 / bar.width;
+    break;
+  }
+  case HORIZONTAL: {
+    int mouseY = raylib::GetMouseY();
+    var = (mouseY - bar.y) * 100 / bar.height;
+    break;
+  }
+  default:
+    throw std::logic_error("Invalid direction");
+    break;
+  }
 
   if (var < 0) {
     var = 0;

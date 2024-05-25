@@ -18,6 +18,8 @@
     "disabled_bg": "#000000",
     "enabled_bg": "#0000FF",
 
+    "direction": "vertical",
+
     // slider button
     "button": {
 

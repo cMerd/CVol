@@ -7,6 +7,8 @@ namespace raylib {
 #include <raylib.h>
 }
 
+enum DIRECTION { HORIZONTAL, VERTICAL };
+
 struct anim_config {
   float scale;
   float speed;
@@ -31,6 +33,7 @@ struct slider_config {
   float width;
   float height;
   float radius;
+  DIRECTION direction;
 };
 
 struct vol_config {
@@ -57,4 +60,5 @@ private:
   static raylib::Color hexToColor(const std::string &hex);
   static bool isValidHexColor(const std::string &hex);
   static uint16_t hexToUint16(const std::string &hex);
+  static DIRECTION stringToDirection(const std::string &str);
 };

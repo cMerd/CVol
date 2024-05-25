@@ -41,6 +41,8 @@ void config_cvol::parse(const std::string &config_path) {
       hexToColor(config["slider"]["disabled_bg"].asString());
   this->slider.enabled_bg =
       hexToColor(config["slider"]["enabled_bg"].asString());
+  this->slider.direction =
+      stringToDirection(config["slider"]["direction"].asString());
   logln("Loaded slider config");
 
   this->slider.button.seperator_width =
@@ -70,6 +72,20 @@ void config_cvol::parse(const std::string &config_path) {
   this->volume_text.font_size = config["volume_text"]["font_size"].asUInt();
   this->volume_text.font_path = config["volume_text"]["font_path"].asString();
   logln("Loaded volume text config.");
+}
+
+DIRECTION config_cvol::stringToDirection(const std::string &str) {
+  std::string s = str;
+  for (char &c : s) {
+    c = tolower(c);
+  }
+  if (s == "horizontal") {
+    return HORIZONTAL;
+  }
+  if (s == "vertical") {
+    return VERTICAL;
+  }
+  throw std::invalid_argument("Unknown direction: " + str);
 }
 
 raylib::Color config_cvol::hexToColor(const std::string &hex) {
