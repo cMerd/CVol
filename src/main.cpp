@@ -3,6 +3,7 @@
 #include "../inc/args.hpp"
 #include "../inc/config.hpp"
 #include "../inc/cvol.hpp"
+#include "../inc/errors.hpp"
 #include "../inc/log.hpp"
 #include "../inc/slider.hpp"
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
     arg.parseArgs(argc, argv);
   } catch (const std::exception &e) {
     errorForce(e.what());
-    return 1;
+    return ERRORS::ARG_ERROR;
   }
 
   if (arg.version) {
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]) {
     logln("Parsed config file");
   } catch (const std::exception &e) {
     errorForce(e.what());
-    return 2;
+    return ERRORS::CONFIG_ERROR;
   }
 
   initProgram(config.width, config.height, arg.raylib_logs);

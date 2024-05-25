@@ -1,0 +1,2 @@
+
+enum ERRORS { ARG_ERROR = 1, CONFIG_ERROR = 2 };
