@@ -68,6 +68,7 @@ void config_cvol::parse(const std::string &config_path) {
   this->volume_text.xPos = config["volume_text"]["xPos"].asFloat();
   this->volume_text.yPos = config["volume_text"]["yPos"].asFloat();
   this->volume_text.fontSize = config["volume_text"]["font_size"].asUInt();
+  this->volume_text.font_path = config["volume_text"]["font_path"].asString();
   logln("Loaded volume text config.");
 }
 

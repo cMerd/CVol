@@ -106,9 +106,7 @@ int main(int argc, char *argv[]) {
   logln("Window created.");
 
   const raylib::Font font =
-      raylib::LoadFontEx((std::string(raylib::GetApplicationDirectory()) +
-                          std::string("../assets/font.ttf"))
-                             .c_str(),
+      raylib::LoadFontEx((config.volume_text.font_path).c_str(),
                          config.volume_text.fontSize, NULL, 0);
 
   while (!raylib::WindowShouldClose()) {
@@ -136,6 +134,8 @@ int main(int argc, char *argv[]) {
   logln("Exitting program...");
 
   raylib::UnloadFont(font);
+  logln("Unloaded font.");
+
   raylib::CloseWindow();
   logln("Window closed.");
 

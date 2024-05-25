@@ -35,6 +35,7 @@ struct slider_config {
 
 struct vol_config {
   std::string volume_label;
+  std::string font_path;
   float xPos;
   float yPos;
   int fontSize;

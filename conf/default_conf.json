@@ -31,6 +31,7 @@
     "volume_label": "Volume: ",
     "xPos": 20,
     "yPos": 350,
-    "font_size": 35
+    "font_size": 35,
+    "font_path": "/usr/share/fonts/gnu-free/FreeMono.otf"
   }
 }
