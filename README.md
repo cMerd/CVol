@@ -28,6 +28,11 @@ make configure # Create default configuration
 make install # Add executable to path
 ```
 
+to uninstall
+```bash
+make uninstall
+```
+
 ### Usage
 Just execute `cvol` to run it.
 `cvol --help` for more.
