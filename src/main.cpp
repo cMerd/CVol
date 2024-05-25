@@ -19,10 +19,9 @@ void initProgram(int width, int height, bool log_raylib) {
     raylib::SetTraceLogLevel(raylib::LOG_NONE);
   }
 
-  raylib::SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT |
-                         raylib::FLAG_WINDOW_RESIZABLE |
-                         raylib::FLAG_WINDOW_UNDECORATED);
-  raylib::SetTargetFPS(60);
+  raylib::SetConfigFlags(
+      raylib::FLAG_WINDOW_TRANSPARENT | raylib::FLAG_WINDOW_RESIZABLE |
+      raylib::FLAG_WINDOW_UNDECORATED | raylib::FLAG_VSYNC_HINT);
 
   raylib::InitWindow(width, height, "CVol");
 }
@@ -79,7 +78,9 @@ int main(int argc, char *argv[]) {
     raylib::ClearBackground(config.bg);
 
     if (arg.raylib_logs) {
-      raylib::DrawFPS(10, 10);
+      raylib::DrawTextEx(
+          font, (std::to_string(raylib::GetFPS()) + "fps").c_str(), {10, 10},
+          std::min(20, config.volume_text.font_size), 2, config.fg);
     }
 
     // We don't need to reinitalize twice in a single frame
