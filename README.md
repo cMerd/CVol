@@ -23,6 +23,7 @@ Run below commands to install CVol:
 ```bash
 git clone https://github.com/cMerd/CVol.git # Clone repo
 cd CVol # change directory to cloned repo
+mkdir build # Create build directory
 make # Build 
 make configure # Create default configuration
 make install # Add executable to path
