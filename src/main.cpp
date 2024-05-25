@@ -78,6 +78,10 @@ int main(int argc, char *argv[]) {
     raylib::BeginDrawing();
     raylib::ClearBackground(config.bg);
 
+    if (arg.raylib_logs) {
+      raylib::DrawFPS(10, 10);
+    }
+
     // We don't need to reinitalize twice in a single frame
     int current_volume = (int)vc.getVolume();
 
