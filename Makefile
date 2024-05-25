@@ -17,9 +17,18 @@ $(BUILDDIR)/cvol: $(OBJS)
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Create a configuration directory and a default configuration file
 configure:
 	mkdir ~/.config/cvol/ -p
 	cp ./conf/default_conf.json ~/.config/cvol/config.json
+
+# Move the binary to path (/usr/bin)
+install:
+	sudo cp ./build/cvol /usr/bin/cvol
+
+# Remove the binary from path (/usr/bin)
+uninstall:
+	sudo rm -f /usr/bin/cvol
 
 # Clean target to remove all files in build directory
 clean:
