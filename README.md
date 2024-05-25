@@ -7,6 +7,7 @@ Here are the list of tools you'll need:
  - `gcc/g++`
  - `alsalib`
  - `jsoncpp`
+ - `raylib`
 
 You probably can find these in your package manager.
 For example in `pacman`:
@@ -14,6 +15,7 @@ For example in `pacman`:
 sudo pacman -S gcc
 sudo pacman -S alsa-lib alsa-utils
 sudo pacman -S jsoncpp
+sudo pacman -S raylib
 ```
 
 ### Installation 
