@@ -4,7 +4,7 @@
 #include <string>
 
 namespace raylib {
-#include <raylib.h>
+#include "./raylib.h"
 }
 
 struct anim_config {

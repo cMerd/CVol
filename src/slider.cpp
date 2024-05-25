@@ -1,6 +1,6 @@
 #include "../inc/slider.hpp"
 namespace raylib {
-#include <raylib.h>
+#include "./raylib.h"
 }
 
 slider::slider() {}

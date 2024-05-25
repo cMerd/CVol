@@ -10,7 +10,7 @@
 #include <string>
 
 namespace raylib {
-#include <raylib.h>
+#include "./raylib.h"
 }
 
 void initProgram(int width, int height, bool log_raylib) {
