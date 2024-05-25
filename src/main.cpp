@@ -77,17 +77,20 @@ int main(int argc, char *argv[]) {
     raylib::BeginDrawing();
     raylib::ClearBackground(config.bg);
 
+    // We don't need to reinitalize twice in a single frame
+    int current_volume = (int)vc.getVolume();
+
     // volume text
     DrawTextEx(
         font,
-        (config.volume_text.volume_label + std::to_string(vc.getVolume()) + "%")
+        (config.volume_text.volume_label + std::to_string(current_volume) + "%")
             .c_str(),
         (raylib::Vector2){config.volume_text.x_pos, config.volume_text.y_pos},
         config.volume_text.font_size, 2, config.fg);
 
     // slider
     slider_widget.render(
-        vc.getVolume(),
+        current_volume,
         {config.slider.x, config.slider.y, config.slider.width,
          config.slider.height},
         config.slider.radius, config.slider.enabled_bg, config.slider.button.bg,
