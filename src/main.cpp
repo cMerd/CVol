@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
     std::cout << "cvol: a simple GUI audio controller\n";
     std::cout << "version: " << CVOL_VERSION << '\n';
     std::cout << "\'cvol --help\' for more.\n";
+    return 0;
   }
 
   if (arg.help) {
