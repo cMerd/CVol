@@ -19,9 +19,9 @@ void initProgram(int width, int height, bool log_raylib) {
     raylib::SetTraceLogLevel(raylib::LOG_NONE);
   }
 
-  raylib::SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT);
-  raylib::SetConfigFlags(raylib::FLAG_WINDOW_RESIZABLE);
-  raylib::SetWindowState(raylib::FLAG_WINDOW_UNDECORATED);
+  raylib::SetConfigFlags(raylib::FLAG_WINDOW_TRANSPARENT |
+                         raylib::FLAG_WINDOW_RESIZABLE |
+                         raylib::FLAG_WINDOW_UNDECORATED);
   raylib::SetTargetFPS(60);
 
   raylib::InitWindow(width, height, "CVol");
