@@ -12,7 +12,7 @@ slider::slider(int val, const std::function<void(int)> &update_fn) {
   this->update_func = update_fn;
 }
 
-void slider::render(const raylib::Rectangle &bar, float radius,
+void slider::render(int val, const raylib::Rectangle &bar, float radius,
                     const raylib::Color &color,
                     const raylib::Color &button_color,
                     const raylib::Color &button_line_color,
@@ -20,6 +20,7 @@ void slider::render(const raylib::Rectangle &bar, float radius,
                     const raylib::Color &clicked_button_color,
                     const raylib::Color &hovered_button_color, float anim_speed,
                     float anim_scale, float seperator_width) {
+  this->var = val;
   this->draw(bar, radius, color, button_color, button_line_color, unused_color,
              clicked_button_color, hovered_button_color, anim_speed, anim_scale,
              seperator_width);

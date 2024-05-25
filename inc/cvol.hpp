@@ -16,6 +16,9 @@ public:
   ~volumeController();
 
 private:
+  // To update it live
+  void reinitializeMixer();
+
   long min_vol, max_vol;
 
   // All used variables from alsalib

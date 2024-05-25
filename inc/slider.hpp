@@ -13,7 +13,7 @@ public:
   slider(int val);
   slider(int val, const std::function<void(int)> &update_fn);
 
-  void render(const raylib::Rectangle &bar, float radius,
+  void render(int val, const raylib::Rectangle &bar, float radius,
               const raylib::Color &color, const raylib::Color &button_color,
               const raylib::Color &button_line_color,
               const raylib::Color &unused_color,

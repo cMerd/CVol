@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
 
     // slider
     slider_widget.render(
+        vc.getVolume(),
         {config.slider.x, config.slider.y, config.slider.width,
          config.slider.height},
         config.slider.radius, config.slider.enabled_bg, config.slider.button.bg,
