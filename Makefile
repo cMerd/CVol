@@ -25,6 +25,7 @@ configure:
 # Move the binary to path (/usr/bin)
 install:
 	sudo cp ./build/cvol /usr/bin/cvol
+	sudo cp ./conf/cvol.desktop /usr/share/applications/cvol.desktop
 
 # Remove the binary from path (/usr/bin)
 uninstall:
