@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -Wall -lraylib -ljsoncpp
+CXXFLAGS := -Wall -lraylib -ljsoncpp -O3
 SRCDIR := src
 BUILDDIR := build
 
