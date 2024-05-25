@@ -32,10 +32,7 @@ int main(int argc, char *argv[]) {
   args arg;
   config_cvol config;
   volumeController vc;
-  slider slider_widget(vc.getVolume(), [&vc](int val) {
-    vc.setVolume(val);
-    logln("Volume set to: " + std::to_string(val));
-  });
+  slider slider_widget(vc.getVolume(), [&vc](int val) { vc.setVolume(val); });
 
   try {
     arg.parseArgs(argc, argv);
@@ -57,6 +54,8 @@ int main(int argc, char *argv[]) {
     std::cout << "\t-d, --debug: Enable debug logs\n";
     std::cout << "\t-r, --raylig_logs: Enable raylib logs\n";
     std::cout << "\t-h, --help: Display this help page\n";
+    std::cout << "\t-v, --version: Display the version\n";
+    std::cout << "\t-c, --config: Load config from custom path\n";
     return 0;
   }
 
