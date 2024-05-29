@@ -30,10 +30,6 @@ void initProgram(int width, int height, bool log_raylib) {
 int main(int argc, char *argv[]) {
 
   args arg;
-  config_cvol config;
-  volumeController vc;
-  slider slider_widget(vc.getVolume(), [&vc](int val) { vc.setVolume(val); });
-
   try {
     arg.parseArgs(argc, argv);
   } catch (const std::exception &e) {
@@ -60,6 +56,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  config_cvol config;
   try {
     config.parse(arg.config);
     logln("Parsed config file");
@@ -74,6 +71,17 @@ int main(int argc, char *argv[]) {
   raylib::Font font = raylib::LoadFontEx((config.volume_text.font_path).c_str(),
                                          config.volume_text.font_size, NULL, 0);
 
+  volumeController vc;
+  slider slider_widget(
+      vc.getVolume(), [&vc](int val) { vc.setVolume(val); },
+      {config.slider.x, config.slider.y, config.slider.width,
+       config.slider.height},
+      config.slider.radius, config.slider.enabled_bg, config.slider.button.bg,
+      config.slider.button.seperator_color, config.slider.disabled_bg,
+      config.slider.button.click_bg, config.slider.button.hover_bg,
+      config.slider.button.anim.speed, config.slider.button.anim.scale,
+      config.slider.button.seperator_width, config.slider.direction);
+
   while (!raylib::WindowShouldClose()) {
     raylib::BeginDrawing();
     raylib::ClearBackground(config.bg);
@@ -84,27 +92,17 @@ int main(int argc, char *argv[]) {
           std::min(20, config.volume_text.font_size), 2, config.fg);
     }
 
-    // We don't need to reinitalize twice in a single frame
-    int current_volume = (int)vc.getVolume();
+    // slider
+    slider_widget.render(vc.getVolume());
 
     // volume text
     DrawTextEx(
         font,
-        (config.volume_text.volume_label + std::to_string(current_volume) + "%")
+        (config.volume_text.volume_label +
+         std::to_string(slider_widget.getValue()) + "%")
             .c_str(),
         (raylib::Vector2){config.volume_text.x_pos, config.volume_text.y_pos},
         config.volume_text.font_size, 2, config.fg);
-
-    // slider
-    slider_widget.render(
-        current_volume,
-        {config.slider.x, config.slider.y, config.slider.width,
-         config.slider.height},
-        config.slider.radius, config.slider.enabled_bg, config.slider.button.bg,
-        config.slider.button.seperator_color, config.slider.disabled_bg,
-        config.slider.button.click_bg, config.slider.button.hover_bg,
-        config.slider.button.anim.speed, config.slider.button.anim.scale,
-        config.slider.button.seperator_width, config.slider.direction);
 
     raylib::EndDrawing();
   }
