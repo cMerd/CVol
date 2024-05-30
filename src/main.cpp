@@ -1,5 +1,6 @@
 #define CVOL_VERSION "v0.2.0"
 
+#include "../inc/app.hpp"
 #include "../inc/args.hpp"
 #include "../inc/config.hpp"
 #include "../inc/cvol.hpp"
@@ -65,8 +66,7 @@ int main(int argc, char *argv[]) {
     return ERRORS::CONFIG_ERROR;
   }
 
-  initProgram(config.width, config.height, arg.raylib_logs);
-  logln("Window created.");
+  app window(config.width, config.height, "CVol", config.bg, arg.raylib_logs);
 
   raylib::Font font = raylib::LoadFontEx((config.volume_text.font_path).c_str(),
                                          config.volume_text.font_size, NULL, 0);
@@ -82,9 +82,8 @@ int main(int argc, char *argv[]) {
       config.slider.button.anim.speed, config.slider.button.anim.scale,
       config.slider.button.seperator_width, config.slider.direction);
 
-  while (!raylib::WindowShouldClose()) {
-    raylib::BeginDrawing();
-    raylib::ClearBackground(config.bg);
+  while (!window.shouldClose()) {
+    window.clear();
 
     if (arg.raylib_logs) {
       raylib::DrawTextEx(
@@ -104,15 +103,8 @@ int main(int argc, char *argv[]) {
         (raylib::Vector2){config.volume_text.x_pos, config.volume_text.y_pos},
         config.volume_text.font_size, 2, config.fg);
 
-    raylib::EndDrawing();
+    window.process();
   }
-  logln("Exitting program...");
-
-  raylib::UnloadFont(font);
-  logln("Unloaded font.");
-
-  raylib::CloseWindow();
-  logln("Window closed.");
 
   return 0;
 }
