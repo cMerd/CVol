@@ -63,3 +63,5 @@ void app::loadFont(const std::string &font_path, int font_size,
   this->fg = fg;
   logln("Font loaded.");
 }
+
+raylib::Font app::getFont() const { return font; }

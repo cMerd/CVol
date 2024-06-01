@@ -18,6 +18,7 @@ public:
   void clear() const;
   void process() const;
   void drawText(const std::string &text, float xPos, float yPos) const;
+  raylib::Font getFont() const;
 
 private:
   bool log;

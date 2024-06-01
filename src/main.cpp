@@ -1,4 +1,4 @@
-#define CVOL_VERSION "v0.2.0"
+#define CVOL_VERSION "v0.2.1"
 
 #include "../inc/app.hpp"
 #include "../inc/args.hpp"
@@ -68,8 +68,8 @@ int main(int argc, char *argv[]) {
 
   app window(config.width, config.height, "CVol", config.bg, arg.raylib_logs);
 
-  raylib::Font font = raylib::LoadFontEx((config.volume_text.font_path).c_str(),
-                                         config.volume_text.font_size, NULL, 0);
+  window.loadFont((config.volume_text.font_path).c_str(),
+                  config.volume_text.font_size, config.fg);
 
   volumeController vc;
   slider slider_widget(
@@ -85,18 +85,12 @@ int main(int argc, char *argv[]) {
   while (!window.shouldClose()) {
     window.clear();
 
-    if (arg.raylib_logs) {
-      raylib::DrawTextEx(
-          font, (std::to_string(raylib::GetFPS()) + "fps").c_str(), {10, 10},
-          std::min(20, config.volume_text.font_size), 2, config.fg);
-    }
-
     // slider
     slider_widget.render(vc.getVolume());
 
     // volume text
     DrawTextEx(
-        font,
+        window.getFont(),
         (config.volume_text.volume_label +
          std::to_string(slider_widget.getValue()) + "%")
             .c_str(),
