@@ -11,7 +11,6 @@ namespace raylib {
 
 class slider {
 public:
-  std::function<void(int)> update_func;
   slider();
   slider(int val);
   slider(int val, const std::function<void(int)> &update_fn);
@@ -38,6 +37,7 @@ public:
   int getValue() const;
 
 private:
+  std::function<void(int)> update_func;
   raylib::Rectangle slider_bar;
   raylib::Rectangle cursor;
   raylib::Color bg;

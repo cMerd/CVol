@@ -15,19 +15,6 @@ namespace raylib {
 #include <raylib.h>
 }
 
-void initProgram(int width, int height, bool log_raylib) {
-
-  if (!log_raylib) {
-    raylib::SetTraceLogLevel(raylib::LOG_NONE);
-  }
-
-  raylib::SetConfigFlags(
-      raylib::FLAG_WINDOW_TRANSPARENT | raylib::FLAG_WINDOW_RESIZABLE |
-      raylib::FLAG_WINDOW_UNDECORATED | raylib::FLAG_VSYNC_HINT);
-
-  raylib::InitWindow(width, height, "CVol");
-}
-
 int main(int argc, char *argv[]) {
 
   args arg;
