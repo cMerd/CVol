@@ -30,6 +30,7 @@ install:
 # Remove the binary from path (/usr/bin)
 uninstall:
 	sudo rm -f /usr/bin/cvol
+	sudo rm -f /usr/share/applications/cvol.desktop
 
 # Clean target to remove all files in build directory
 clean:
